@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id                  Int        @id @default(autoincrement())
+  email               String     @unique
+  password            String
+
+  @@map("users")
+}
+
+model Categories {
+  id                  Int           @id @default(autoincrement())
+  name                String        @unique
+  tests               Tests[]
+
+  @@map("categories")
+}
+
+model Terms {
+  id                  Int           @id @default(autoincrement())
+  number              Int           @unique
+  disciplines         Disciplines[]
+}
+
+model Disciplines {
+  id                  Int           @id @default(autoincrement())
+  name                String        @unique
+  terms               Terms         @relation(fields: [termId], references: [id])
+  termId              Int
+  teachersDisciplines TeacherDisciplines[]
+}
+
+model Teachers {
+  id                  Int           @id @default(autoincrement())
+  name                String        @unique
+  teacherDisciplines  TeacherDisciplines[]
+}
+
+model TeacherDisciplines {
+  id                  Int           @id @default(autoincrement())
+  teachers            Teachers      @relation(fields: [teachersId], references: [id])
+  teachersId          Int
+  disciplines         Disciplines   @relation(fields: [disciplinesId], references: [id])
+  disciplinesId       Int
+  tests               Tests[]
+}
+
+model Tests {
+  id                      Int                 @id @default(autoincrement())
+  name                    String      
+  pdfUrl                  String      
+  categories              Categories          @relation(fields: [categoriesId], references: [id])
+  categoriesId            Int
+  teachersDisciplines     TeacherDisciplines  @relation(fields: [teacherDisciplinedId], references: [id])
+  teacherDisciplinedId    Int
+}
