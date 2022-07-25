@@ -17,6 +17,27 @@ export async function findByCategoriesId (categoriesId: number) {
     })
 }
 
+export async function getAllDisciplines () {
+    return prisma.terms.findMany({
+        include: {
+            disciplines: {
+                include: {
+                    teachersDisciplines: {
+                        include: {
+                            teachers: true,
+                            tests: {
+                                include: {
+                                    categories: true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    })
+}
+
 export async function create ({name, pdfUrl, categoriesId, teacherDisciplinedId}: CreateTestsData) {
     return prisma.tests.create({
         data: {

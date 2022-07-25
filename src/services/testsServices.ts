@@ -15,5 +15,17 @@ export async function create (test: CreateTestsData, token: string) {
     if (!checkCategories) { throw { type: "no_content"} };
 
     const create = await repositories.create(test);
-    return create;
+    return {... create};
 };
+
+export async function viewsByDisciplines (token: string) {
+    await authentication.verifyToken(token);
+
+    const viewsByDisciplines = await repositories.getAllDisciplines();
+
+    return viewsByDisciplines
+}
+
+export async function viewsByTeachers (token: string) {
+
+}
